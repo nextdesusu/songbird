@@ -1,72 +1,91 @@
 import React from 'react';
-import {
-    Howl,
-    Howler
-} from 'howler';
-
 import AnswerTemplate from './AnswerTemplate';
+import SoundPlayer from './SoundPlayer';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
+const getRandomInt = (a, b) => {
+    return b;
+}
 
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
         const { dataBirds } = this.props;
         const options = dataBirds.map((data) => ({name: data.name, isAnswered: false}));
+        const start = 0;
+        const end = dataBirds.length - 1;
         this.state = {
+            correctId: getRandomInt(start, end),
             options,
-            currentAnswerId: null,
+            currentId: null,
         };
-    }
-
-    incorrectAnswerTemplate() {
-        return (
-            <React.Fragment>
-
-            </React.Fragment>
-        );
     }
 
     render() {
         const {
-            correctId,
             dataBirds,
             hiddenBirdImage,
+            theme,
         } = this.props;
         const {
+            correctId,
             options,
-            currentAnswerId,
+            currentId,
         } = this.state;
         const correctAnswer = dataBirds[correctId];
+        const currentAnswer = dataBirds[currentId];
         return (
             <main>
                 <section>
                     {
-                        currentAnswerId === correctId ?
+                        currentId === correctId ?
                         <AnswerTemplate
                             name={correctAnswer.name}
                             imageSrc={correctAnswer.image}
-                            audioSrc={correctAnswer.audio}
-                        /> :
+                        >
+                            <SoundPlayer src={correctAnswer.audio} />
+                        </AnswerTemplate>
+                        :
                         <AnswerTemplate
-                            name='****'
+                            name='******'
                             imageSrc={hiddenBirdImage}
-                            audioSrc={correctAnswer.audio}
-                        />
+                        >
+                            <SoundPlayer src={correctAnswer.audio} />
+                        </AnswerTemplate>
                     }
                 </section>
                 <section>
-                    <ul>
+                    <ButtonGroup style={{height: '100%', width: '100%'}} size='lg' vertical>
                         {
-                            options.map((option) => {
-                                return (<li>{option.isAnswered ? 'y' : 'n'}:{option.name}</li>)
+                            options.map((option, index) => {
+                                return (
+                                    <Button
+                                        key={index}
+                                        variant={theme}
+                                        disabled={option.isAnswered}
+                                    >
+                                        {option.name}
+                                    </Button>
+                                )
                             })
                         }
-                    </ul>
+                    </ButtonGroup>
                 </section>
                 <section>
                     {
-                        currentAnswerId === null ?
-                            <p>Ответ не дан</p> : 
-                            this.incorrectAnswerTemplate()
+                        currentId === null ?
+                        <AnswerTemplate
+                                name={'Вы пока еще не ответили'}
+                                text={'Делайте выбор'}   
+                            >
+                            </AnswerTemplate> : 
+                            <AnswerTemplate
+                                name={currentAnswer.name}
+                                imageSrc={currentAnswer.image}
+                            >
+                                <SoundPlayer src={currentAnswer.audio} />
+                            </AnswerTemplate>
                     }
                 </section>
             </main>

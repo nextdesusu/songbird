@@ -1,4 +1,6 @@
 import React from 'react';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 
 export default function Header(props) {
     const {
@@ -9,13 +11,21 @@ export default function Header(props) {
     return (
         <header>
             <h1>{children}</h1>
-            <ul>
+            <Tabs>
                 {
                     topics.map((topic, index) => {
-                        return <li>{topic}</li>
+                        const topicName = topic.charAt(0).toUpperCase() + topic.slice(1);
+                        return (
+                            <Tab
+                                key={index}
+                                title={topicName}
+                                disabled={current !== index}
+                            >   
+                            </Tab>
+                        )
                     })
                 }
-            </ul>
+            </Tabs>
         </header>
     )
 }

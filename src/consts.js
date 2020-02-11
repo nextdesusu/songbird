@@ -6,3 +6,5 @@ export const TOPICS = [
     'хищные птицы',
     'морские птицы',
 ];
+
+export const THEME = 'dark';

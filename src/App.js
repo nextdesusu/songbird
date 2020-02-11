@@ -2,9 +2,11 @@ import React from 'react';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
+import Button from 'react-bootstrap/Button';
 
 import {
-  TOPICS
+  TOPICS,
+  THEME
 } from './consts';
 import birdsData from './birdsData';
 import hiddenBirdImage from './images/hiddenBirdImage.jpg';
@@ -19,8 +21,17 @@ export default class App extends React.Component {
       stage: 0,
       score: 0,
       answered: false,
-      currentCorrectId: 0,
     }
+  }
+
+  nextStage = () => {
+    const { stage } = this.state;
+    this.setState({ stage: stage + 1 });
+  }
+
+  isDone = () => {
+    const { stage } = this.state;
+    return stage === birdsData.length - 1;
   }
 
   render() {
@@ -28,9 +39,7 @@ export default class App extends React.Component {
       stage,
       score,
       answered,
-      currentCorrectId,
     } = this.state;
-    console.log(hiddenBirdImage)
     const currentQuestion = birdsData[stage];
     return (
       <React.Fragment>
@@ -44,10 +53,18 @@ export default class App extends React.Component {
         <Main
           dataBirds={currentQuestion}
           hiddenBirdImage={hiddenBirdImage}
-          correctId={currentCorrectId}
+          theme={THEME}
         />
        <Footer>
-
+         <Button
+          onClick={this.nextStage}
+          size='lg'
+          variant={THEME}
+          block
+          disabled={!answered}
+        >
+          next
+        </Button>
        </Footer>
       </React.Fragment>
     )
