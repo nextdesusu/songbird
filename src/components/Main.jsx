@@ -4,8 +4,9 @@ import SoundPlayer from './SoundPlayer';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
-const getRandomInt = (a, b) => {
-    return b;
+const getRandomInt = (min, max) => {
+    const rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
 }
 
 export default class Main extends React.Component {
@@ -16,10 +17,58 @@ export default class Main extends React.Component {
         const start = 0;
         const end = dataBirds.length - 1;
         this.state = {
+            currentStage: this.props.stage,
             correctId: getRandomInt(start, end),
             options,
-            currentId: null,
+            answers: [],
+            lookId: null,
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.stage !== state.currentStage){
+            const { dataBirds } = props;
+            const options = dataBirds.map((data) => ({name: data.name, isAnswered: false}));
+            const start = 0;
+            const end = dataBirds.length - 1;
+            return {
+                currentStage: props.stage,
+                correctId: getRandomInt(start, end),
+                options,
+                answers: [],
+                lookId: null,
+            };
+        }
+        return null;
+    }
+
+    look = (event) => {
+        const { target } = event;
+        const currentId = Number(target.getAttribute('data-index'));
+        this.setState({ lookId: currentId });
+    }
+
+    makeAnswer = (event) => {
+        const {
+            addScore,
+        } = this.props;
+        const { target } = event;
+        const {
+            answers,
+            options,
+            correctId
+        } = this.state;
+        const currentId = Number(target.getAttribute('data-index'));
+        const maxScore = 5;
+        if (currentId === correctId) {
+            addScore(maxScore - answers.length);
+        }
+        const newOptions = [...options];
+        newOptions[currentId].isAnswered = true;
+        this.setState({
+            answers: [...answers, currentId],
+            options: newOptions,
+        });
     }
 
     render() {
@@ -31,17 +80,21 @@ export default class Main extends React.Component {
         const {
             correctId,
             options,
-            currentId,
+            answers,
+            lookId,
         } = this.state;
+        const currentId = lookId === null ? answers[answers.length - 1] : lookId;
+        const isAnswerCorrect = answers[answers.length - 1] === correctId;
         const correctAnswer = dataBirds[correctId];
         const currentAnswer = dataBirds[currentId];
         return (
             <main>
                 <section>
                     {
-                        currentId === correctId ?
+                        isAnswerCorrect ?
                         <AnswerTemplate
                             name={correctAnswer.name}
+                            text={correctAnswer.description}
                             imageSrc={correctAnswer.image}
                         >
                             <SoundPlayer src={correctAnswer.audio} />
@@ -56,16 +109,28 @@ export default class Main extends React.Component {
                     }
                 </section>
                 <section>
-                    <ButtonGroup style={{height: '100%', width: '100%'}} size='lg' vertical>
+                    <ButtonGroup
+                        style={{height: '100%', width: '100%'}}
+                        size='lg'
+                        vertical
+                        onClick={isAnswerCorrect ? this.look : this.makeAnswer}
+                    >
                         {
                             options.map((option, index) => {
+                                const winingButton = index === correctId;
+                                const answerTheme = winingButton ? 'success' : 'danger';
+                                const {
+                                    name,
+                                    isAnswered,
+                                } = option;
                                 return (
                                     <Button
+                                        data-index={index}
                                         key={index}
-                                        variant={theme}
-                                        disabled={option.isAnswered}
+                                        variant={isAnswered ? answerTheme : theme}
+                                        disabled={isAnswered && !isAnswerCorrect}
                                     >
-                                        {option.name}
+                                        {name}
                                     </Button>
                                 )
                             })
@@ -74,7 +139,7 @@ export default class Main extends React.Component {
                 </section>
                 <section>
                     {
-                        currentId === null ?
+                        answers.length === 0 ?
                         <AnswerTemplate
                                 name={'Вы пока еще не ответили'}
                                 text={'Делайте выбор'}   
@@ -82,6 +147,7 @@ export default class Main extends React.Component {
                             </AnswerTemplate> : 
                             <AnswerTemplate
                                 name={currentAnswer.name}
+                                text={currentAnswer.description}
                                 imageSrc={currentAnswer.image}
                             >
                                 <SoundPlayer src={currentAnswer.audio} />

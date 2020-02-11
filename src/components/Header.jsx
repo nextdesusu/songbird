@@ -6,11 +6,13 @@ export default function Header(props) {
     const {
         current,
         topics,
+        score,
         children
     } = props;
     return (
         <header>
             <h1>{children}</h1>
+            <h2>score: {score}</h2>
             <Tabs>
                 {
                     topics.map((topic, index) => {

@@ -1,21 +1,29 @@
 button, h1 {
-  text-transform: capitalize;
+    text-transform: capitalize;
 }
-
+  
 h1 {
-  color: black;
+    color: black;
 }
 
+img {
+    min-width: 100px;
+    max-width: 300px;
+    align-self: center;
+    min-height: 100px;
+    max-height: 200px;
+}
+  
 main {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  margin: 0.5em;
-  grid-gap: 0.5em;
+    display: grid;
+    grid-template-columns: 1fr 0.5fr 1fr;
+    margin: 0.5em;
+    grid-gap: 0.5em;
 }
-
+  
 @media screen and (max-width: 450px) {
-  main {
-    grid-template-columns: none;
-    grid-template-rows: repeat(3, auto);
-  }
+    main {
+      grid-template-columns: none;
+      grid-template-rows: repeat(3, auto);
+    }
 }

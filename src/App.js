@@ -20,26 +20,40 @@ export default class App extends React.Component {
     this.state = {
       stage: 0,
       score: 0,
+      shouldMainRefresh: false,
       answered: false,
     }
   }
 
-  nextStage = () => {
-    const { stage } = this.state;
-    this.setState({ stage: stage + 1 });
+  mainRefreshed = () => {
+    this.setState({ shouldMainRefresh: false });
   }
 
-  isDone = () => {
+  addScore = (amount) => {
+    const { score } = this.state;
+    this.setState({
+      score: score + amount,
+      answered: true,
+    });
+  }
+
+  nextStage = () => {
     const { stage } = this.state;
-    return stage === birdsData.length - 1;
+    this.setState({
+      stage: stage + 1,
+      answered: false,
+      shouldMainRefresh: true,
+    });
   }
 
   render() {
     const {
       stage,
       score,
+      shouldMainRefresh,
       answered,
     } = this.state;
+    const isDone = stage === birdsData.length - 1;
     const currentQuestion = birdsData[stage];
     return (
       <React.Fragment>
@@ -54,6 +68,8 @@ export default class App extends React.Component {
           dataBirds={currentQuestion}
           hiddenBirdImage={hiddenBirdImage}
           theme={THEME}
+          addScore={this.addScore}
+          stage={stage}
         />
        <Footer>
          <Button
