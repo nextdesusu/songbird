@@ -6,14 +6,15 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
-import {
-    TOPICS,
-    THEME
-} from './consts';
 import birdsData from './birdsData';
 import victorySound from './media/correct.mp3';
 import loseSound from './media/wrong.mp3';
 import hiddenBirdImage from './media/hiddenBirdImage.jpg';
+
+import {
+    TOPICS,
+    THEME
+} from './consts';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -125,14 +126,17 @@ export default class App extends React.Component {
                                 </p>
                         }
                     </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            onClick={this.restart}
-                            variant={THEME}
-                        >
-                            Начать заново
-                    </Button>
-                    </Modal.Footer>
+                    {
+                        !absoluteVictory &&
+                        <Modal.Footer>
+                            <Button
+                                onClick={this.restart}
+                                variant={THEME}
+                            >
+                                Начать заново
+                            </Button>
+                        </Modal.Footer>
+                    }
                 </Modal>
             </React.Fragment>
         )

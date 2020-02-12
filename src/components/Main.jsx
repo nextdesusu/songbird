@@ -70,7 +70,6 @@ export default class Main extends React.Component {
             const mainSound = mSoundNode.current;
             victorySound.play();
             mainSound.pause();
-            console.log('mainSoundis', mainSound);
             addScore(maxScore - answers.length);
         } else {
             const loseSound = lSoundNode.current;
@@ -102,7 +101,6 @@ export default class Main extends React.Component {
             lSoundNode,
         } = this.state;
         const currentId = lookId === null ? answers[answers.length - 1] : lookId;
-        console.log('correct', correctId);
         const isAnswerCorrect = answers[answers.length - 1] === correctId;
         const correctAnswer = dataBirds[correctId];
         const currentAnswer = dataBirds[currentId];
