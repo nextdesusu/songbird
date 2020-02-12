@@ -1,5 +1,6 @@
-button, h1 {
+button, h1, h2 {
     text-transform: capitalize;
+    font-size: 1.3em;
 }
   
 h1 {
@@ -13,12 +14,12 @@ img {
     min-height: 100px;
     max-height: 200px;
 }
-  
+
 main {
     display: grid;
     grid-template-columns: 1fr 0.5fr 1fr;
-    margin: 0.5em;
     grid-gap: 0.5em;
+    margin: 0.1em;
 }
   
 @media screen and (max-width: 450px) {
@@ -27,3 +28,9 @@ main {
       grid-template-rows: repeat(3, auto);
     }
 }
+
+#root {
+    display: grid;
+    grid-template-rows: 0.3fr 1.5fr 0.1fr;
+    height: 100vh;
+} 

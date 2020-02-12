@@ -1,6 +1,5 @@
 import React from 'react';
 import AnswerTemplate from './AnswerTemplate';
-import SoundPlayer from './SoundPlayer';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
@@ -22,6 +21,7 @@ export default class Main extends React.Component {
             options,
             answers: [],
             lookId: null,
+            mSoundNode: React.createRef(),
             vSoundNode: React.createRef(),
             lSoundNode: React.createRef(),
         };
@@ -59,6 +59,7 @@ export default class Main extends React.Component {
             answers,
             options,
             correctId,
+            mSoundNode,
             vSoundNode,
             lSoundNode
         } = this.state;
@@ -66,7 +67,10 @@ export default class Main extends React.Component {
         const maxScore = 5;
         if (currentId === correctId) {
             const victorySound = vSoundNode.current;
+            const mainSound = mSoundNode.current;
             victorySound.play();
+            mainSound.pause();
+            console.log('mainSoundis', mainSound);
             addScore(maxScore - answers.length);
         } else {
             const loseSound = lSoundNode.current;
@@ -93,6 +97,7 @@ export default class Main extends React.Component {
             options,
             answers,
             lookId,
+            mSoundNode,
             vSoundNode,
             lSoundNode,
         } = this.state;
@@ -101,28 +106,27 @@ export default class Main extends React.Component {
         const isAnswerCorrect = answers[answers.length - 1] === correctId;
         const correctAnswer = dataBirds[correctId];
         const currentAnswer = dataBirds[currentId];
+        const correctAnswerName = `${correctAnswer.name} ${correctAnswer.species}`;
+        const currentAnswerName = currentAnswer ? `${currentAnswer.name} ${currentAnswer.species}` : 'none';
         return (
             <main>
                 <section>
                     <audio src={vSound} ref={vSoundNode}></audio>
                     <audio src={lSound} ref={lSoundNode}></audio>
-                    {
-                        isAnswerCorrect ?
-                            <AnswerTemplate
-                                name={correctAnswer.name}
-                                text={correctAnswer.description}
-                                imageSrc={correctAnswer.image}
-                            >
-                                <SoundPlayer src={correctAnswer.audio} />
-                            </AnswerTemplate>
-                            :
-                            <AnswerTemplate
-                                name='******'
-                                imageSrc={hiddenBirdImage}
-                            >
-                                <SoundPlayer src={correctAnswer.audio} />
-                            </AnswerTemplate>
-                    }
+                    <AnswerTemplate
+                        name={isAnswerCorrect ? correctAnswerName : '******'}
+                        text={isAnswerCorrect ? correctAnswer.description : ''}
+                        imageSrc={isAnswerCorrect ? correctAnswer.image : hiddenBirdImage}
+                    >
+                        <div className='controls'>
+                            <audio
+                                ref={mSoundNode}
+                                style={{ width: '100%' }}
+                                src={correctAnswer.audio}
+                                controls
+                            />
+                        </div>
+                    </AnswerTemplate>
                 </section>
                 <section>
                     <ButtonGroup
@@ -162,11 +166,17 @@ export default class Main extends React.Component {
                             >
                             </AnswerTemplate> :
                             <AnswerTemplate
-                                name={currentAnswer.name}
+                                name={currentAnswerName}
                                 text={currentAnswer.description}
                                 imageSrc={currentAnswer.image}
                             >
-                                <SoundPlayer src={currentAnswer.audio} />
+                                <div className='controls'>
+                                    <audio
+                                        style={{ width: '100%' }}
+                                        src={currentAnswer.audio}
+                                        controls
+                                    />
+                                </div>
                             </AnswerTemplate>
                     }
                 </section>

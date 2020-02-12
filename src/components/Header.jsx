@@ -11,8 +11,7 @@ export default function Header(props) {
     } = props;
     return (
         <header>
-            <h1>{children}</h1>
-            <h2>score: {score}</h2>
+            {children}
             <Tabs>
                 {
                     topics.map((topic, index) => {

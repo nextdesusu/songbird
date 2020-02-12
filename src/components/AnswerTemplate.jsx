@@ -9,7 +9,7 @@ export default function AnswerTemplate(props) {
         children,
     } = props;
     return (
-        <Card style={{height: '100%'}}>
+        <Card style={{height: '100%', fontSize: '0.8em'}}>
             <Card.Body>
                 <Card.Title>{name}</Card.Title>
                 {text && <Card.Text>{text}</Card.Text>}
